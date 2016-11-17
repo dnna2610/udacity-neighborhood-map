@@ -177,7 +177,7 @@ function processLocation(i) {
                 processLocation(i);
             }, 1000);
         } else {
-            console.log("Status is " + status + " with number " + i);
+            console.log("Status is " + status + " with location number " + i);
         }
     });
 };
