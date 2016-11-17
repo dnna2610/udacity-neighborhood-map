@@ -35,10 +35,11 @@
                 </p>
                 <div class="container">
                     <p class="control">
-                        <input class="input" data-bind="textInput: query" type="text" placeholder="Search...">
+                        <input class="input" type="text" data-bind="textInput: query" placeholder="Search...">
                     </p>
                 </div>
-                <div id="place_list">
+                <div id="place_list" data-bind="foreach: places">
+                    <div class="panel-block place_list_item" data-bind="text: name, visible: visible, click: $parent.item_clicked"></div>
                 </div>
             </nav>
         </div>
@@ -46,9 +47,6 @@
             <div id="map" style="min-height: 450px; height: 90%;"></div>
         </div>
     </div>
-    <script type="text/template" data-template="place">
-        <div class="panel-block place_list_item" data-id="{{id}}" id="{{id}}">{{name}}</div>
-    </script>
     <script type="text/javascript" src="js/app.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8W_oCzK-BN3sH0_weyd1nhVi6xnqXYOk&libraries=places&callback=initMap">
     </script>

@@ -33,114 +33,55 @@ var locations = [{
     placeID: "ChIJ3aHAuDfGxokR4Uzgw4H35rg"
 }];
 
-function comparePlace(a, b) {
-    if (a.name < b.name) return -1;
-    else if (a.name > b.name) return 1;
-    return 0;
-}
-
-function MapViewModel(placeVMs) {
+function MapViewModel() {
     var self = this;
-    self.places = ko.observableArray(placeVMs);
-}
 
-var data = {
-    places: []
-};
+    self.places = ko.observableArray([]);
+    self.query = ko.observable('');
 
-var octopus = {
-    addPlace: function (place) {
-        data.places.push(place);
-        data.places.sort(function (a, b) {
+    self.query.subscribe(function (newValue) {
+        search = newValue.toLowerCase();
+        for (i = 0; i < self.places().length; i++) {
+            if (search != '') {
+                if (!self.places()[i].name.toLowerCase().includes(search)) {
+                    self.places()[i].visible(false)
+                    self.places()[i].marker.setVisible(false);
+                } else {
+                    self.places()[i].visible(true);
+                    self.places()[i].marker.setVisible(true);
+                }
+            } else {
+                self.places()[i].visible(true);
+                self.places()[i].marker.setVisible(true);
+            }
+        };
+    });
+
+    self.addPlace = function (place) {
+        place.visible = ko.observable(true);
+        self.places.push(place);
+        self.places.sort(function(a, b) {
             if (a.name < b.name) return -1;
             else if (a.name > b.name) return 1;
             return 0;
         });
-        view.render();
-    },
-
-    search: function (query) {
-        query = query.toLowerCase();
-        for (i = 0; i < data.places.length; i++) {
-            if (query != '') {
-                if (!data.places[i].name.toLowerCase().includes(query)) {
-                    data.places[i].visible = false;
-                    data.places[i].marker.setVisible(false);
-                } else {
-                    data.places[i].visible = true;
-                    data.places[i].marker.setVisible(true);
-                }
-            } else {
-                data.places[i].visible = true;
-                data.places[i].marker.setVisible(true);
-            }
-        };
-        view.render();
-    },
-
-    getVisiblePlaces: function () {
-        return data.places.filter(function (place) {
-            return place.visible === true;
-        });
-    },
-
-    getMarker: function (place_id) {
-        for (i = 0; i < data.places.length; i++) {
-            if (data.places[i].place_id === place_id) {
-                return data.places[i].marker;
-            };
-        };
-    },
-
-    getInfoContent: function (place_id) {
-        for (i = 0; i < data.places.length; i++) {
-            if (data.places[i].place_id === place_id) {
-                return data.places[i].infoContent;
-            };
-        };
-    },
-
-    init: function () {
-        view.init();
     }
-};
 
-var view = {
-
-    init: function () {
-        this.$placeList = $('#place_list');
-        this.placeTemplate = $('script[data-template="place"]').html();
-
-        this.render();
-    },
-
-    render: function () {
-        var $placeList = this.$placeList,
-            placeTemplate = this.placeTemplate;
-
-        $placeList.html('');
-        octopus.getVisiblePlaces().forEach(function (place) {
-            // Replace template markers with data
-            var thisTemplate = placeTemplate.replace(/{{id}}/g, place.place_id).replace(/{{name}}/g, place.name);
-            $placeList.append(thisTemplate);
-            $("#" + place.place_id).click(function () {
-                map.setCenter(place.marker.getPosition());
-                infowindow.setContent(place.infoContent);
-                infowindow.open(map, place.marker);
-            });
-        });
+    self.item_clicked = function (place) {
+        map.setCenter(place.marker.getPosition());
+        infowindow.setContent(place.infoContent);
+        infowindow.open(map, place.marker);
     }
-};
+}
 
-octopus.init();
+var model = new MapViewModel();
+ko.applyBindings(model);
 
 function processLocation(i) {
     service.getDetails({
         placeId: locations[i].placeID
     }, function (place, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-            place.visible = true;
-
             var marker = new google.maps.Marker({
                 map: map,
                 position: place.geometry.location,
@@ -171,9 +112,9 @@ function processLocation(i) {
 
             place.marker = marker;
             place.infoContent = infoContent;
-            octopus.addPlace(place);
+            model.addPlace(place);
         } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-            setTimeout(function (){
+            setTimeout(function () {
                 processLocation(i);
             }, 1000);
         } else {
@@ -198,13 +139,3 @@ function initMap() {
         processLocation(i);
     };
 }
-
-var SearchViewModel = {
-    query: ko.observable('')
-}
-
-ko.applyBindings(SearchViewModel);
-
-SearchViewModel.query.subscribe(function (newValue) {
-    octopus.search(newValue);
-});
