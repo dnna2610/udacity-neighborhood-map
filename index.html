@@ -2,8 +2,9 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="node_modules/bulma/css/bulma.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="node_modules/bulma/css/bulma.css" />
     <script type="text/javascript" src="node_modules/knockout/build/output/knockout-latest.js"></script>
     <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
     <title>Neighbourhood Map</title>
@@ -31,11 +32,14 @@
         <div class="column">
             <nav class="panel">
                 <p class="panel-heading">
-                    Locations
+                    <span class="icon">
+                        <i class="fa fa-map-marker"></i>
+                    </span> Locations
                 </p>
                 <div class="container">
-                    <p class="control">
-                        <input class="input" type="text" data-bind="textInput: query" placeholder="Search...">
+                    <p class="control has-icon">
+                        <input class="input" type="text" data-bind="textInput: query" placeholder="Search..." />
+                        <i class="fa fa-search"></i>
                     </p>
                 </div>
                 <div id="place_list" data-bind="foreach: places">

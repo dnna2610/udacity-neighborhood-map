@@ -1,3 +1,2 @@
 # udacity-neighborhood-map
-
-Using Google API, this is a map of the neighborhood surrounding Drexel University, the school I'm attending. My Google API key is only allowed to be called 10 request per seconds, so it might take more than a second to load all the locations.
+To run the project just open index.html. There is a running version of the site at http://dnna2610.github.io/udacity/map/index.html 
