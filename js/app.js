@@ -5,11 +5,14 @@ var place_types = [];
 var model = new MapViewModel();
 
 var foursquare = {
+    // properties for the API query
     client_id: "JM1HR302DJHO0EPPDKD25IINSQDNDTK2ASUFM4DSVXACCFS4",
     client_secret: "GEU1HGSQBDAM3JFJOABMLGCGL2IQH0RHY4HGITZMIIVZRMRS",
     ll: "39.9566,-75.1899",
     v: "20161118",
     radius: '1000',
+
+    // Function to get query url
     get_url: function () {
         var url = "https://api.foursquare.com/v2/venues/search?";
         url += "ll=" + this.ll;
@@ -19,6 +22,8 @@ var foursquare = {
         url += "&radius=" + this.radius;
         return url;
     },
+
+    // Make the request to foursquare asynchronously and add the venues to the model
     get_locations: function () {
         var url = this.get_url();
         console.log(url);
@@ -32,6 +37,9 @@ var foursquare = {
 
                     model.addPlace(venue);
                 }
+            },
+            error: function(err) {
+                $("#foursquareError").show();
             }
         });
     }
@@ -124,13 +132,14 @@ function MapViewModel() {
 }
 
 function initMap() {
-    $("#error").hide();
+    $("#googleError").hide();
+    $("#foursquareError").hide();
     map = new google.maps.Map(document.getElementById('map'), {
         center: {
             lat: 39.9566,
             lng: -75.1899
         },
-        zoom: 17
+        zoom: 18
     });
 
     infowindow = new google.maps.InfoWindow();
@@ -140,7 +149,7 @@ function initMap() {
 }
 
 function googleError() {
-    $("#error").show();
+    $("#googleError").show();
 }
 
 ko.applyBindings(model);
