@@ -38,7 +38,7 @@ var foursquare = {
                     model.addPlace(venue);
                 }
             },
-            error: function(err) {
+            error: function (err) {
                 $("#foursquareError").show();
             }
         });
@@ -101,6 +101,12 @@ function MapViewModel() {
             infowindow.setContent(infoContent);
             map.setCenter(marker.getPosition());
             infowindow.open(map, this);
+            map.setCenter(marker.getPosition());
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function () {
+                marker.setAnimation(null);
+            }, 1400);
+
         });
 
         // Save the marker and infoContent
@@ -118,13 +124,13 @@ function MapViewModel() {
 
     self.item_clicked = function (place) {
         var marker = place.marker;
-        map.setCenter(marker.getPosition());
+        map.panTo(marker.getPosition());
         infowindow.setContent(place.infoContent);
         infowindow.open(map, marker);
         marker.setAnimation(google.maps.Animation.BOUNCE);
         setTimeout(function () {
             marker.setAnimation(null);
-        }, 1500);
+        }, 1400);
         $('html, body').animate({
             scrollTop: $("#map").offset().top
         }, 1500);
